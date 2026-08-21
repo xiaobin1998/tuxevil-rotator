@@ -51,17 +51,11 @@ describe("applyModelAlias", () => {
 		assert.equal(applyModelAlias("gemini-3.5-flash-high"), "gemini-3-flash-agent");
 	});
 
-	it("returns gemini-3.7-flash-tiered unchanged (no alias configured)", () => {
-		assert.equal(
-			applyModelAlias("gemini-3.7-flash-tiered"),
-			"gemini-3.7-flash-tiered",
-		);
-	});
-
-	it("creates no aliases for virtual gemini-3.7-flash low/medium/high", () => {
-		for (const variant of ["low", "medium", "high"]) {
+	it("maps Gemini 3.7 Flash thinking variants to the tiered provider model", () => {
+		for (const variant of ["low", "medium", "high", "tiered"]) {
 			const id = `gemini-3.7-flash-${variant}`;
-			assert.equal(applyModelAlias(id), id);
+			assert.equal(applyModelAlias(id), "gemini-3.7-flash-tiered");
 		}
+		assert.equal(applyModelAlias("gemini-3.7-flash"), "gemini-3.7-flash-tiered");
 	});
 });

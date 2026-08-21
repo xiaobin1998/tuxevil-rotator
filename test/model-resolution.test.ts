@@ -148,13 +148,11 @@ describe("model resolution", () => {
 		);
 	});
 
-	it("does not treat gemini-3.7-flash low/medium/high as supported virtual models", () => {
+	it("normalizes gemini-3.7-flash low/medium/high to the tiered provider model", () => {
 		for (const variant of ["low", "medium", "high"]) {
 			const id = `gemini-3.7-flash-${variant}`;
-			// Falls back to the generic Flash display key, never a 3.7 virtual key.
-			assert.equal(resolveDisplayModelKey(id), "gemini-3-flash");
-			// No quota alt-key or alias entry is created for the virtual variant.
-			assert.ok(!QUOTA_MODEL_KEYS.gemini.altKeys.includes(id));
+			assert.equal(resolveDisplayModelKey(id), "gemini-3.7-flash-tiered");
+			assert.equal(resolveQuotaModelKey(id), "gemini");
 		}
 	});
 

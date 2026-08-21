@@ -164,6 +164,12 @@ const DEFAULT_MODEL_ALIASES: Record<string, string> = {
   "gemini-3.5-flash": "gemini-3-flash-agent",
   "gemini-3.5-flash-high": "gemini-3-flash-agent",
   "gemini-3.5-flash-medium": "gemini-3-flash-agent",
+  // Antigravity exposes Gemini 3.7 Flash variants as thinking levels on
+  // the tiered upstream model, not as separate provider model IDs.
+  "gemini-3.7-flash": "gemini-3.7-flash-tiered",
+  "gemini-3.7-flash-high": "gemini-3.7-flash-tiered",
+  "gemini-3.7-flash-medium": "gemini-3.7-flash-tiered",
+  "gemini-3.7-flash-low": "gemini-3.7-flash-tiered",
   "gpt-oss-120b": "gpt-oss-120b-medium",
 };
 let modelAliasesOverride: Record<string, string> | null = null;
@@ -346,14 +352,12 @@ export function resolveDisplayModelKey(requestModel: string): string {
     if (lower.includes("-high")) return "gemini-3.6-flash-high";
     return "gemini-3.6-flash-high"; // unspecified variant
   }
-  // Gemini 3.7 Flash — only the tiered variant exists. Unsupported
-  // virtual variants (low/medium/high) intentionally fall through to the
-  // generic Flash fallback below instead of resolving as supported models.
+  // Gemini 3.7 Flash variants share the tiered quota bucket. High/medium/low
+  // are operator-facing thinking levels, while tiered is the provider model ID.
   if (
     lower.includes("gemini") &&
     lower.includes("3.7") &&
-    lower.includes("flash") &&
-    lower.includes("-tiered")
+    lower.includes("flash")
   ) {
     return "gemini-3.7-flash-tiered";
   }
